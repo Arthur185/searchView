@@ -1,0 +1,14 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+//通用配置
+ext {
+    commonCompileSdkVersion = 27
+    android = [
+            commonMinSdkVersion   : 17,
+            commonTargetSdkVersion: 27,
+            commonVersionCode     : 3,
+            commonversionName     : "1.0.3"
+    ]
+
+    java = ['javaVersion': JavaVersion.VERSION_1_7]
+
+}
