@@ -9,7 +9,7 @@ import java.util.List;
  * @author wangfei
  * @date 2019/7/24.
  */
-public class SearchDataDto {
+public class SearchDataDto extends SearchModelDto {
     public static String HISTORY_RECORD = "0";
 
     private List<SearchItem> datas = new ArrayList<>();

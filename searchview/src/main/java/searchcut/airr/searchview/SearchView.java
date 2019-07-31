@@ -20,9 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 
 public class SearchView extends LinearLayout {
@@ -35,7 +33,6 @@ public class SearchView extends LinearLayout {
     // 搜索框组件
     private EditText et_search; // 搜索按键
     private LinearLayout search_block; // 搜索框布局
-    private ImageView searchBack; // 返回按键
 
     // 数据库变量
     // 用于存放历史搜索记录
@@ -179,12 +176,10 @@ public class SearchView extends LinearLayout {
         et_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             // 输入文本后调用该方法
@@ -264,11 +259,8 @@ public class SearchView extends LinearLayout {
         fuzzyCheckAdapter = new FuzzyCheckAdapter(R.layout.item_fuzzy, new ICallBack() {
             @Override
             public void SearchAciton(String string) {
-                et_search.setText(string);
-                rv_date.setVisibility(GONE);
                 rv_fuzzy_check.setVisibility(GONE);
-                mCallBack.SearchAciton(string);
-                toSearch();
+                toSearchChangeUI(string);
             }
         });
         LinearLayoutManager linearLayout = new LinearLayoutManager(context);
@@ -309,11 +301,7 @@ public class SearchView extends LinearLayout {
         searchDataDto.setOnCallBackListener(new ICallBack() {
             @Override
             public void SearchAciton(String string) {
-                if (mCallBack != null) {
-                    mCallBack.SearchAciton(string);
-                }
-                et_search.setText(string);
-                rv_date.setVisibility(GONE);
+                toSearchChangeUI(string);
             }
         });
         searchDataDto.setOnClickListener(new OnClickListener() {
@@ -326,8 +314,26 @@ public class SearchView extends LinearLayout {
                 rv_date.setVisibility(GONE);
             }
         });
+
+        searchDataDto.setCallBack(new ICallBack() {
+            @Override
+            public void SearchAciton(String string) {
+                toSearchChangeUI(string);
+            }
+
+
+        });
         dataAdapter.addList(searchDataDto.getViews(listOtherData));
 
+    }
+
+    private void toSearchChangeUI(String string) {
+        if (mCallBack != null) {
+            mCallBack.SearchAciton(string);
+        }
+        et_search.setText(string);
+        rv_date.setVisibility(GONE);
+        toSearch();
     }
 
     /**
@@ -435,17 +441,39 @@ public class SearchView extends LinearLayout {
     }
 
     /**
-     * 设置其他自定义item view注入
+     * 注入其他view，可多次注入 不含data
      *
-     * @param hashMap
+     * @param key
+     * @param view
+     * @return
      */
-    public void setOtherView(HashMap<String, Class> hashMap) {
-        dataAdapter.initMap(hashMap);
-        Set<String> strings = hashMap.keySet();
-        for (String key : strings) {
-            listOtherData.add(new SearchItem(key, null));
+    public SearchView setOtherView(String key, Class view) {
+        setOtherView(key, view, null);
+        return this;
+    }
+
+    /**
+     * 注入其他view，可多次注入
+     *
+     * @param key
+     * @param view
+     * @param data
+     * @return
+     */
+
+    public SearchView setOtherView(String key, Class view, SearchModelDto data) {
+        dataAdapter.initMap(key, view);
+        if (data != null) {
+            data.setCallBack(new ICallBack() {
+                @Override
+                public void SearchAciton(String string) {
+                    toSearchChangeUI(string);
+                }
+            });
         }
+        listOtherData.add(new SearchItem(key, data));
         dataAdapter.addList(searchDataDto.getViews(listOtherData));
+        return this;
     }
 
     private void replaceView(int id, View view) {

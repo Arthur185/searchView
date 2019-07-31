@@ -2,6 +2,7 @@ package searchcut.airr.searchview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import java.util.HashMap;
@@ -17,14 +18,14 @@ public class DataAdapter extends BaseRecyclerAdapter<SearchItem, DataAdapter.Vie
 
     public DataAdapter(int layout) {
         super(null, layout);
-        initMap(null);
+        initMap(null, null);
     }
 
-    public void initMap(HashMap<String, Class> hashMap) {
+    public void initMap(String key, Class view) {
         configViewMap.clear();
         configViewMap.put(SearchDataDto.HISTORY_RECORD, HistoryView.class);
-        if (hashMap != null) {
-            configViewMap.putAll(hashMap);
+        if (!TextUtils.isEmpty(key) && view != null) {
+            configViewMap.put(key, view);
         }
     }
 

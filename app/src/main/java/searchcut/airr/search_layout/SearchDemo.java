@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import searchcut.airr.searchview.ICallBack;
+import searchcut.airr.searchview.SearchDataDto;
 import searchcut.airr.searchview.SearchView;
-
 
 
 public class SearchDemo extends AppCompatActivity {
@@ -54,9 +53,6 @@ public class SearchDemo extends AppCompatActivity {
         searchView.setFuzzyData(list);
 
 
-        HashMap<String, Class> hashMap = new HashMap<>();
-        hashMap.put("1", CustomView.class);
-
-        searchView.setOtherView(hashMap);
+        searchView.setOtherView("1", CustomView.class, new SearchDataDto());
     }
 }
